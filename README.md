@@ -1,10 +1,10 @@
 # Real-Time Exchange Rate and Date Display
 
-This project is a simple web application that displays the real-time exchange rate between Omani Rial (OMR) and Iranian Rial (IRR) along with the current date and time. It fetches the exchange rate data from a JSON file (`data.json`) and updates the UI accordingly.
+This project is a simple web application that displays the real-time exchange rate between Omani Rial (OMR) and Iranian Rial (IRT) along with the current date and time. It fetches the exchange rate data from a JSON file (`data.json`) and updates the UI accordingly.
 
 ## Features
 
-- Displays the real-time exchange rate between OMR and IRR.
+- Displays the real-time exchange rate between OMR and IRT (Iranian Tooman).
 - Shows the current date and time.
 - Updates the data and time every minute to keep it current.
 

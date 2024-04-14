@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             });
 
             // Update price and datetime in the UI
-            document.getElementById("irr").textContent = `${prices[prices.length - 1]} IRR`;
+            document.getElementById("irt").textContent = `${prices[prices.length - 1]} IRT`;
             document.getElementById("updatedate").textContent = `Last update: ${new Date(data[data.length - 1].datetime).toLocaleString()}`;
 
             // Create or update the chart
