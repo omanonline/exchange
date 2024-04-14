@@ -1,23 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link  href="/styles/output.css" rel="stylesheet"/>
+    <link href="/styles/output.css" rel="stylesheet" />
     <title>Exchange</title>
 </head>
+
 <body class="bg-gray-800">
     <div class="text-center text-white mt-12">
         <h1 class="text-3xl text-yellow-500 font-bold" id="datetime"></h1>
-        <p class="text-xl my-4"> Omani Rial - Iranian Rial </p>
-        <div class="flex justify-center">
-                  <h2 class="text-2xl text-white-500 font-bold" id="omr">1 OMR</h2>
-                  <h2 class="text-2xl text-white-500 font-bold ml-1 mr-1">=</h2>
-                  <h2 class="text-2xl text-white-500 font-bold" id="irr">---</h2>
+        <p class="text-xl my-4 text-blue-800 my-4"> Omani Rial - Iranian Rial </p>
+        <div class="flex justify-center my-4">
+            <h2 class="text-2xl text-blue-500 font-bold" id="omr">1 OMR</h2>
+            <h2 class="text-2xl text-blue-500 font-bold ml-1 mr-1">=</h2>
+            <h2 class="text-2xl text-blue-500 font-bold" id="irr"></h2>
         </div>
-        <p class="text-xl my-4 text-blue-500" id="updatedate">---</p>
-     </div>
+        <p class="my-4 text-red-500" id="updatedate"></p>
+       
+        <div class="flex justify-center my-4">
+                <canvas id="priceChart" style="width:100%;max-width:700px"></canvas>
+        </div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
     <script src="/scripts/script.js"></script>
+
+
 </body>
+
 </html>
