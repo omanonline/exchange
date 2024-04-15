@@ -2,7 +2,9 @@ document.addEventListener("DOMContentLoaded", async function() {
     // Function to fetch JSON data
     async function fetchData() {
         try {
-            const response = await fetch("https://ex.omanonline.org/data/data.json");
+            const cacheBuster = Date.now();
+            const url = `https://ex.omanonline.org/data/data.json?cache=${cacheBuster}`;
+            const response = await fetch(url);
             const data = await response.json();
             return data;
         } catch (error) {
