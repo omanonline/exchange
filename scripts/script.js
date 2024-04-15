@@ -7,63 +7,81 @@ document.addEventListener("DOMContentLoaded", async function() {
             return data;
         } catch (error) {
             console.error("Error fetching data:", error);
+            throw error; // Re-throw the error to propagate it to the caller
         }
     }
 
     // Function to update UI with the latest data and create or update the chart
-    async function updateUI() {
-        // Update date and time
-        const currentDate = new Date();
-        const dateTimeString = currentDate.toLocaleString();
-        document.getElementById("datetime").innerHTML = dateTimeString;
+    async function updateUI(data) {
+        try {
+            // Update date and time
+            const currentDate = new Date();
+            const dateTimeString = currentDate.toLocaleString();
+            document.getElementById("datetime").innerHTML = dateTimeString;
 
-        // Update price and datetime from JSON data
-        const data = await fetchData();
-        if (data && data.length > 0) {
-            const prices = data.map(item => item.price);
-            const datetimes = data.map(item => new Date(item.datetime));
+            // Check if data is available
+            if (data && data.length > 0) {
+                const prices = data.map(item => item.price);
+                const datetimes = data.map(item => new Date(item.datetime));
 
-            const times = data.map(item => {
-                const datetime = new Date(item.datetime);
-                const hours = datetime.getHours().toString().padStart(2, '0'); // Ensure 2-digit format
-                const minutes = datetime.getMinutes().toString().padStart(2, '0'); // Ensure 2-digit format
-                const seconds = datetime.getSeconds().toString().padStart(2, '0'); // Ensure 2-digit format
-                return `${hours}:${minutes}:${seconds}`;
-            });
+                const times = data.map(item => {
+                    const datetime = new Date(item.datetime);
+                    const hours = datetime.getHours().toString().padStart(2, '0'); // Ensure 2-digit format
+                    const minutes = datetime.getMinutes().toString().padStart(2, '0'); // Ensure 2-digit format
+                    const seconds = datetime.getSeconds().toString().padStart(2, '0'); // Ensure 2-digit format
+                    return `${hours}:${minutes}:${seconds}`;
+                });
 
-            // Update price and datetime in the UI
-            document.getElementById("irt").textContent = `${prices[prices.length - 1].toLocaleString()} IRT`;
-            document.getElementById("updatedate").textContent = `Last update: ${new Date(data[data.length - 1].datetime).toLocaleString()}`;
+                // Update price and datetime in the UI
+                document.getElementById("irt").textContent = `${prices[prices.length - 1].toLocaleString()} IRT`;
+                document.getElementById("updatedate").textContent = `Last update: ${new Date(data[data.length - 1].datetime).toLocaleString()}`;
 
-            // Create or update the chart
-            createOrUpdateChart(times, prices);
+                // Create or update the chart
+                createOrUpdateChart(times, prices);
+            } else {
+                // Handle case when data is empty
+                console.error("Data is empty or invalid.");
+            }
+        } catch (error) {
+            // Handle errors during UI update
+            console.error("Error updating UI:", error);
         }
     }
 
-    // Function to create or update the chart using Plotly.js
     function createOrUpdateChart(datetimes, prices) {
         const priceChart = new Chart("priceChart", {
             type: "line",
             data: {
-              labels: datetimes,
-              datasets: [{
-                backgroundColor:"",
-                borderColor: "rgba(255,255,255,0.5)",
-                data: prices
-              }]
+                labels: datetimes,
+                datasets: [{
+                    backgroundColor: "",
+                    borderColor: "rgba(255,255,255,0.5)",
+                    data: prices
+                }]
             },
             options: {
-                legend: {display: false}
-              }
-          });
-         
+                legend: { display: false }
+            }
+        });
     }
 
-    // Call updateUI initially to load data on page load
-    updateUI();
+    // Function to continuously update data and UI
+    async function updateDataAndUI() {
+        try {
+            const data = await fetchData();
+            await updateUI(data);
+        } catch (error) {
+            // Retry after a delay if there's an error
+            console.error("Retrying after error:", error);
+            setTimeout(updateDataAndUI, 60000); // Retry after 1 minute
+        }
+    }
 
-    // Call updateUI every minute (60000 milliseconds) to keep data and time updated
-    setInterval(updateUI, 60000);
+    // Call updateDataAndUI initially to load data on page load
+    updateDataAndUI();
+
+    // Call updateDataAndUI every minute (60000 milliseconds) to keep data and time updated
+    setInterval(updateDataAndUI, 60000);
 
     // Function to update the date and time every second
     function updateDateTime() {
@@ -77,4 +95,10 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // Call updateDateTime every second to update the date and time in real-time
     setInterval(updateDateTime, 1000);
+
+    // Show content once the page is fully loaded
+    setTimeout(function() {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("content").style.display = "block";
+    }, 1000);
 });
