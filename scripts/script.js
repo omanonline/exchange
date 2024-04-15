@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     // Function to fetch JSON data
     async function fetchData() {
         try {
-            const response = await fetch("data/data.json");
+            const response = await fetch("https://ex.omanonline.org/data/data.json");
             const data = await response.json();
             return data;
         } catch (error) {
