@@ -97,7 +97,29 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // Call updateDateTime every second to update the date and time in real-time
     setInterval(updateDateTime, 1000);
+    document.getElementById("calculate").addEventListener("click", calculateConversion);
 
+    // Define the calculateConversion function
+    function calculateConversion() {
+        var amount = parseFloat(document.getElementById("amount").value.replace(/,/g, ''));
+        var conversionType = document.getElementById("conversionType").value;
+        var resultElement = document.getElementById("result");
+        var omrValue = 1;
+        var irtValue = parseFloat(document.getElementById("irt").innerText.replace(/,/g, '').replace('IRT', ''));
+        
+        if (isNaN(amount)) {
+            resultElement.innerText = "Please enter a valid amount.";
+            return;
+        }
+        
+        if (conversionType === "omrToIrt") {
+            var result = amount * irtValue / omrValue;
+            resultElement.innerText = amount.toLocaleString() + " OMR is equal to " + result.toLocaleString() + " IRT";
+        } else if (conversionType === "irtToOmr") {
+            var result = amount * omrValue / irtValue;
+            resultElement.innerText = amount.toLocaleString() + " IRT is equal to " + result.toLocaleString() + " OMR";
+        }
+    }
     // Show content once the page is fully loaded
     setTimeout(function() {
         document.getElementById("loading").style.display = "none";
