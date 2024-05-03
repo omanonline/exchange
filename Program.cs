@@ -105,7 +105,7 @@ namespace CurrencyDataApp
 
         private static string EnsureDataFilePath()
         {
-            string dataDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "output", "data");
+            var dataDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "output", "data");
             Directory.CreateDirectory(dataDirectory); // Creates directory if it does not exist
             return Path.Combine(dataDirectory, "data.json");
         }
