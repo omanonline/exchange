@@ -1,4 +1,5 @@
 name: .NET Core Build and Deploy to GitHub Pages
+
 on:
   push:
     branches: [ "main" ]
@@ -30,9 +31,15 @@ jobs:
           git lfs install
           git checkout main
           git add -A
-          git commit -m "Automated publish" || echo "there is nothing to commit, proceed"
+          git commit -m "Automated publish" || echo "No changes to commit, proceeding"
           git pull --rebase publisher main
           git push publisher main   
+
+      - name: Fetch and merge changes from gh-pages
+        run: |
+          git fetch publisher gh-pages
+          git checkout gh-pages
+          git merge publisher/gh-pages --allow-unrelated-histories -m "Merge remote-tracking branch 'publisher/gh-pages'"
 
       - name: Push changes to gh-pages branch
         uses: ad-m/github-push-action@master
@@ -40,8 +47,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages 
 
-      - name: Deploy to Github Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          branch: gh-pages 
-          folder: output
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output
+          cname: ex.omanonline.org
