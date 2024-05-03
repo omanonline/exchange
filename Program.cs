@@ -41,7 +41,8 @@ namespace CurrencyDataApp
         {
             string token = ExtractArgument(args, "-t");
             apiUrl = ExtractArgument(args, "-api");
-            telegramChannelId = ExtractArgument(args, "-channel");
+            string channelArg = ExtractArgument(args, "-channel");
+            telegramChannelId = "@" + channelArg.TrimStart('@');
 
             if (!string.IsNullOrEmpty(token))
             {
@@ -64,7 +65,7 @@ namespace CurrencyDataApp
             }
         }
 
-        private static string ExtractArgument(string[] args, string key)
+        private static string? ExtractArgument(string[] args, string key)
         {
             int index = Array.IndexOf(args, key);
             return index >= 0 && index + 1 < args.Length ? args[index + 1] : null;
