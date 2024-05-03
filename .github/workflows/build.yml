@@ -1,25 +1,47 @@
-name: Build and Publish Web Site
+name: .NET Core Build and Deploy to GitHub Pages
 
 on:
-  push:
-    branches:
-      - master
-      - main
+  schedule:
+    - cron: '*/30 * * * *'  # Runs every 30 minutes
 
 jobs:
-  build:
-    name: Build and Push
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
+      - uses: actions/checkout@v4
 
-    - uses: actions/checkout@master
-      name: Checkout
-    - name: Redirect 404 to Index for SPA
-      run: cp index.html 404.html
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: .
-        cname: ex.omanonline.org
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Run Project
+        run: dotnet run --project exchange.csproj
+
+      - name: Prepare for Commit
+        run: |
+          git config http.sslVerify false
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git remote add publisher "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git show-ref
+          git branch --verbose
+          git lfs install
+          git checkout main
+          git add -A
+          git commit -m "Automated publish" || echo "there is nothing to commit, proceed"
+          git pull --rebase publisher main
+          git push publisher main   
+
+      - name: Push changes to gh-pages branch
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages 
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output
+          cname: ex.omanonline.org
