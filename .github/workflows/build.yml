@@ -18,7 +18,7 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Run Project
-        run: dotnet run --project exchange.csproj
+        run: dotnet run --project exchange.csproj -t ${{ secrets.TELEGRAM_ACCESSTOKEN }} -api ${{ secrets.API_URL }} -channel ${{ secrets.TELEGRAM_CHATID }}
 
       - name: Prepare for Commit
         run: |
