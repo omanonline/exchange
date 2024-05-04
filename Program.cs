@@ -16,7 +16,7 @@ namespace CurrencyDataApp
         private static string apiUrl;
         private static string telegramChannelId;
         private const double OMRConversionRateMain = 2.60;
-        private const double OMRConversionRateTelegram = 2.61;
+        private const double OMRConversionRateTelegram = 2.60;
         private const double RoundingBase = 1000.0;
         private const int DataRetentionLimit = 10;
 
