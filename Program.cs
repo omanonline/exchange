@@ -166,11 +166,12 @@ namespace CurrencyDataApp
                 // Load the image
                 var postFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "img", "post.jpg");
                 var postFileWithText = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "img", "post_with_text.jpg");
+ 
 
                 using (var img = Image.Load(postFile))
                 {
                     // Create a font
-                    var font = SystemFonts.CreateFont("Arial", 100);
+                    var font = SystemFonts.CreateFont("arial", 100);
 
                     var solidBrush = Brushes.Solid(Color.Black);
 
