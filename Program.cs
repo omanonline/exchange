@@ -173,7 +173,10 @@ namespace CurrencyDataApp
 
                 using (var img = Image.Load(postFile))
                 {
-                    var font = SystemFonts.CreateFont("Poppins", 30, FontStyle.Regular);
+                    var font1 = fontCollection.Add(pathFont);
+
+
+                    var font = font1.CreateFont(30);
 
                     // Create a font
  
