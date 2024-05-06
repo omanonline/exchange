@@ -200,7 +200,7 @@ namespace CurrencyDataApp
                 using (var photoStream = new FileStream(postFileWithText, FileMode.Open))
                 {
                     var sentMessage = await botClient.SendPhotoAsync(
-                        chatId: 224753453,
+                        chatId: telegramChannelId,
                         photo: new Telegram.Bot.Types.InputFileStream(photoStream, "post_with_text.jpg"),
                         caption: $"1 OMR = {roundedOMRPrice:n0} IRT");
                 }
