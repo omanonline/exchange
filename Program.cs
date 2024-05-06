@@ -166,13 +166,17 @@ namespace CurrencyDataApp
                 // Load the image
                 var postFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "img", "post.jpg");
                 var postFileWithText = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "img", "post_with_text.jpg");
- 
+                var fontCollection = new FontCollection();
+
+
+                var pathFont = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "fonts", "Poppins-Regular.ttf");
 
                 using (var img = Image.Load(postFile))
                 {
-                    // Create a font
-                    var font = SystemFonts.CreateFont("arial", 100);
+                    var font = SystemFonts.CreateFont("Poppins", 30, FontStyle.Regular);
 
+                    // Create a font
+ 
                     var solidBrush = Brushes.Solid(Color.Black);
 
 
