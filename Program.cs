@@ -158,48 +158,44 @@ namespace CurrencyDataApp
         {
             try
             {
+                // Retrieve the latest currency data from the API
                 string response = await httpClient.GetStringAsync(apiUrl);
                 var orderBook = JsonConvert.DeserializeObject<OrderBook>(response);
 
+                // Calculate the rounded OMR price based on the latest trade price
                 int roundedOMRPrice = CalculateOMRPrice(orderBook.LastTradePrice, OMRConversionRateTelegram);
 
-                // Load the image
+                // Paths for image files and fonts
                 var postFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "img", "post.jpg");
                 var postFileWithText = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "img", "post_with_text.jpg");
-                var fontCollection = new FontCollection();
+                var fontPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "fonts", "Poppins-Regular.ttf");
 
-
-                var pathFont = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "fonts", "Poppins-Regular.ttf");
-
-                using (var img = Image.Load(postFile))
+                // Load the base image
+                using (var image = Image.Load(postFile))
                 {
-                    var font1 = fontCollection.Add(pathFont);
+                    // Load the font for adding text
+                    var fontCollection = new FontCollection();
+                    var fontFamily = fontCollection.Add(fontPath);
+                    var font = fontFamily.CreateFont(70);
 
-
-                    var font = font1.CreateFont(30);
-
-                    // Create a font
- 
+                    // Define text style
                     var solidBrush = Brushes.Solid(Color.Black);
 
-
-                    // Create a solid brush with white color
-
                     // Add text to the image
-                    img.Mutate(ctx => ctx.DrawText(
+                    image.Mutate(ctx => ctx.DrawText(
                         text: $"1 OMR = {roundedOMRPrice:n0} IRT",
                         font: font,
                         brush: solidBrush,
-                        location: new PointF(10, 10)));
+                        location: new PointF(210, 820)));
 
                     // Save the modified image
-                    img.Save(postFileWithText); // Save the modified image with the added text
+                    image.Save(postFileWithText);
                 }
 
-                // Send the modified image as a photo
+                // Send the modified image as a photo to the Telegram channel
                 using (var photoStream = new FileStream(postFileWithText, FileMode.Open))
                 {
-                    var sentMessage = await botClient.SendPhotoAsync(
+                    await botClient.SendPhotoAsync(
                         chatId: telegramChannelId,
                         photo: new Telegram.Bot.Types.InputFileStream(photoStream, "post_with_text.jpg"),
                         caption: $"1 OMR = {roundedOMRPrice:n0} IRT");
@@ -212,10 +208,10 @@ namespace CurrencyDataApp
                 Console.WriteLine($"Error in sending message to Telegram: {ex.Message}");
             }
         }
-       
-        
-        
-        
+
+
+
+
         public class OrderBook
         {
             public string LastTradePrice { get; set; }
