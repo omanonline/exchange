@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "exchange": {
+      "commandName": "Project",
+      "commandLineArgs": "-t 6997779757:AAFqAV6XJkVHFC3124xIM66wN_I52FWD8tw -api https://api.nobitex.ir/v2/orderbook/USDTIRT -channel OmanOnlineExchange"
+    }
+  }
+}

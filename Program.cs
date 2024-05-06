@@ -5,8 +5,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp;
 using Telegram.Bot;
-
+using SixLabors.ImageSharp.Drawing;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.Fonts;
+using SixLabors.ImageSharp.PixelFormats;
+ 
 namespace CurrencyDataApp
 {
     class Program
@@ -105,9 +111,9 @@ namespace CurrencyDataApp
 
         private static string EnsureDataFilePath()
         {
-            var dataDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "output", "data");
+            var dataDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "output", "data");
             Directory.CreateDirectory(dataDirectory); // Creates directory if it does not exist
-            return Path.Combine(dataDirectory, "data.json");
+            return System.IO.Path.Combine(dataDirectory, "data.json");
         }
 
         private static async Task<bool> AppendDataToFileAsync(string filePath, object newData)
@@ -146,6 +152,8 @@ namespace CurrencyDataApp
             }
         }
 
+
+
         private static async Task SendMessageAsync()
         {
             try
@@ -155,9 +163,40 @@ namespace CurrencyDataApp
 
                 int roundedOMRPrice = CalculateOMRPrice(orderBook.LastTradePrice, OMRConversionRateTelegram);
 
-                var sentMessage = await botClient.SendTextMessageAsync(
-                    chatId: telegramChannelId,
-                    text: $"1 OMR = {roundedOMRPrice:n0} IRT");
+                // Load the image
+                var postFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "img", "post.jpg");
+                var postFileWithText = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "img", "post_with_text.jpg");
+
+                using (var img = Image.Load(postFile))
+                {
+                    // Create a font
+                    var font = SystemFonts.CreateFont("Arial", 100);
+
+                    var solidBrush = Brushes.Solid(Color.Black);
+
+
+                    // Create a solid brush with white color
+
+                    // Add text to the image
+                    img.Mutate(ctx => ctx.DrawText(
+                        text: $"1 OMR = {roundedOMRPrice:n0} IRT",
+                        font: font,
+                        brush: solidBrush,
+                        location: new PointF(10, 10)));
+
+                    // Save the modified image
+                    img.Save(postFileWithText); // Save the modified image with the added text
+                }
+
+                // Send the modified image as a photo
+                using (var photoStream = new FileStream(postFileWithText, FileMode.Open))
+                {
+                    var sentMessage = await botClient.SendPhotoAsync(
+                        chatId: 224753453,
+                        photo: new Telegram.Bot.Types.InputFileStream(photoStream, "post_with_text.jpg"),
+                        caption: $"1 OMR = {roundedOMRPrice:n0} IRT");
+                }
+
                 Console.WriteLine("Message successfully sent to Telegram channel.");
             }
             catch (Exception ex)
@@ -165,7 +204,10 @@ namespace CurrencyDataApp
                 Console.WriteLine($"Error in sending message to Telegram: {ex.Message}");
             }
         }
-
+       
+        
+        
+        
         public class OrderBook
         {
             public string LastTradePrice { get; set; }
